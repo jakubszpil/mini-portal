@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer>
       <p>
-        &copy; 2025 <Logo />
+        &copy; {new Date().getFullYear()} <Logo />
       </p>
     </footer>
   );
