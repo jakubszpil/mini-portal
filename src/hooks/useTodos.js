@@ -25,5 +25,11 @@ export function useTodos() {
 
   const createTodo = (title) => {};
 
-  return { todos, todosToDone, toggleTodo, createTodo };
+  const getTodo = (id) => {
+    const idAsNumber = parseInt(id, 10);
+
+    return todos.find((todo) => todo.id === idAsNumber);
+  };
+
+  return { todos, todosToDone, toggleTodo, createTodo, getTodo };
 }

@@ -1,8 +1,13 @@
+import { Link, useSearchParams } from "react-router";
 import TodoList from "../components/TodoList";
 import { useTodos } from "../hooks/useTodos";
 
 export default function Todos() {
+  const [searchParams] = useSearchParams();
+
   const { todos, todosToDone, toggleTodo } = useTodos();
+
+  const sortDirection = searchParams.get("sortBy");
 
   const message =
     todosToDone === 0
@@ -14,7 +19,16 @@ export default function Todos() {
       <h2>Lista zadań</h2>
       <p>{message}</p>
 
-      <TodoList todos={todos} onToggle={toggleTodo} />
+      <nav style={{ display: "flex", gap: 12 }}>
+        <Link to="?sortBy=ASC">Sortuj rosnąco</Link>
+        <Link to="?sortBy=DESC">Sortuj malejąco</Link>
+      </nav>
+
+      <TodoList
+        todos={todos}
+        onToggle={toggleTodo}
+        sortDirection={sortDirection}
+      />
     </div>
   );
 }
