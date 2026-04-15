@@ -1,12 +1,16 @@
 import { Link, Navigate, useParams } from "react-router";
 
-import { useTodos } from "../hooks/useTodos";
-
-export default function Todo() {
+export default function Todo({ todosHook }) {
   const { id } = useParams();
-  const { getTodo } = useTodos();
+  const { getTodo, updateTodoTitle } = todosHook;
 
   const todo = getTodo(id);
+
+  const submitAction = (values) => {
+    const title = values.get("title");
+
+    updateTodoTitle(todo.id, title);
+  };
 
   if (!todo) {
     return <Navigate replace to="/todos" />;
@@ -15,6 +19,12 @@ export default function Todo() {
   return (
     <div>
       <Link to="/todos">Powrót do listy zadań</Link>
+
+      <form action={submitAction}>
+        <input type="text" name="title" defaultValue={todo.title} />
+
+        <button type="submit">Zaktualizuj</button>
+      </form>
 
       <h2>{todo.title}</h2>
     </div>
