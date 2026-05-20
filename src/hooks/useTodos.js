@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
+
+import { fetchData } from "../utils/fetchData";
 
 export function useTodos() {
   const [todos, setTodos] = useState([]);
@@ -6,59 +8,67 @@ export function useTodos() {
 
   const [fetching, setFetching] = useState(true);
 
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     setFetching(true);
 
-    const response = await fetch("/todos.json");
-    const results = await response.json();
+    const results = await fetchData("/todos.json");
 
     setFetching(false);
     setLastKnownId(results.at(-1).id);
     setTodos(results);
-  };
+  }, []);
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]);
 
-  const completedTodos = todos.filter((todo) => todo.completed);
+  const completedTodos = useMemo(
+    () => todos.filter((todo) => todo.completed),
+    [todos],
+  );
 
   const todosToDone = todos.length - completedTodos.length;
 
-  const toggleTodo = (todoId) =>
-    setTodos((prevTodos) => {
-      const nextTodos = [...prevTodos];
+  const toggleTodo = useCallback(
+    (todoId) =>
+      setTodos((prevTodos) => {
+        const nextTodos = [...prevTodos];
 
-      const index = nextTodos.findIndex((todo) => todo.id === todoId);
+        const index = nextTodos.findIndex((todo) => todo.id === todoId);
 
-      if (index >= 0) {
-        const todo = nextTodos[index];
-        nextTodos[index] = { ...todo, completed: !todo.completed };
-      }
+        if (index >= 0) {
+          const todo = nextTodos[index];
+          nextTodos[index] = { ...todo, completed: !todo.completed };
+        }
 
-      return nextTodos;
-    });
+        return nextTodos;
+      }),
+    [],
+  );
 
-  const createTodo = (title) => {
-    const id = lastKnownId + 1;
+  const createTodo = useCallback(
+    (title) => {
+      const id = lastKnownId + 1;
 
-    setTodos(function (prevTodos) {
-      const nextTodos = [...prevTodos];
+      setTodos(function (prevTodos) {
+        const nextTodos = [...prevTodos];
 
-      nextTodos.push({
-        userId: 1,
-        id,
-        title,
-        completed: false,
+        nextTodos.push({
+          userId: 1,
+          id,
+          title,
+          completed: false,
+        });
+
+        return nextTodos;
       });
 
-      return nextTodos;
-    });
+      setLastKnownId(id);
+    },
+    [lastKnownId],
+  );
 
-    setLastKnownId(id);
-  };
-
-  const updateTodoTitle = (id, title) => {
+  const updateTodoTitle = useCallback((id, title) => {
     setTodos(function (prevTodos) {
       const nextTodos = [...prevTodos];
 
@@ -75,13 +85,16 @@ export function useTodos() {
 
       return nextTodos;
     });
-  };
+  }, []);
 
-  const getTodo = (id) => {
-    const idAsNumber = parseInt(id, 10);
+  const getTodo = useCallback(
+    (id) => {
+      const idAsNumber = parseInt(id, 10);
 
-    return todos.find((todo) => todo.id === idAsNumber);
-  };
+      return todos.find((todo) => todo.id === idAsNumber);
+    },
+    [todos],
+  );
 
   return {
     todos,

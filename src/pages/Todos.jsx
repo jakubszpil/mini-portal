@@ -1,6 +1,7 @@
+import { lazy, Suspense, useCallback } from "react";
 import { Link, useSearchParams } from "react-router";
 
-import TodoList from "../components/TodoList";
+const TodoList = lazy(() => import("../components/TodoList"));
 
 export default function Todos({ todosHook }) {
   const [searchParams] = useSearchParams();
@@ -14,11 +15,14 @@ export default function Todos({ todosHook }) {
       ? `Wszystkie zadania zostały wykonane`
       : `Liczba zadań do wykonania: ${todosToDone}`;
 
-  const handleCreate = (formValues) => {
-    const title = formValues.get("title");
+  const handleCreate = useCallback(
+    (formValues) => {
+      const title = formValues.get("title");
 
-    createTodo(title);
-  };
+      createTodo(title);
+    },
+    [createTodo],
+  );
 
   return (
     <div>
@@ -26,7 +30,7 @@ export default function Todos({ todosHook }) {
       <p>{message}</p>
 
       <form action={handleCreate}>
-        <input type="text" name="title" />
+        <input type="text" name="title" required />
         <button type="submit">Utwórz nowe zadanie</button>
       </form>
 
@@ -35,11 +39,13 @@ export default function Todos({ todosHook }) {
         <Link to="?sortBy=ASC">Sortuj od najstarszych</Link>
       </nav>
 
-      <TodoList
-        todos={todos}
-        onToggle={toggleTodo}
-        sortDirection={sortDirection}
-      />
+      <Suspense fallback="Trwa ładowanie listy...">
+        <TodoList
+          todos={todos}
+          onToggle={toggleTodo}
+          sortDirection={sortDirection}
+        />
+      </Suspense>
     </div>
   );
 }

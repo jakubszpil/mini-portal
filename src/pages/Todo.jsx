@@ -21,8 +21,7 @@ export default function Todo({ todosHook }) {
       <Link to="/todos">Powrót do listy zadań</Link>
 
       <form action={submitAction}>
-        <input type="text" name="title" defaultValue={todo.title} />
-
+        <input type="text" name="title" required defaultValue={todo.title} />
         <button type="submit">Zaktualizuj</button>
       </form>
 

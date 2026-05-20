@@ -1,17 +1,18 @@
 import { Link } from "react-router";
 
+import "./TodoItem.css";
+
 export default function TodoItem({ todo, onToggle }) {
   const id = `${todo.id}.completed`;
 
   return (
-    <li style={{ accentColor: "greenyellow" }}>
+    <li className="todo-item">
       <div style={{ display: "flex", gap: 6 }}>
         <label
-          style={{
-            textDecorationLine: todo.completed && "line-through",
-            textDecorationColor: todo.completed && "greenyellow",
-            textDecorationThickness: "4px",
-          }}
+          className={`
+            todo-item-label 
+            ${todo.completed ? "todo-item-label--checked" : ""}
+          `}
           htmlFor={id}
         >
           {todo.title}

@@ -4,11 +4,13 @@ import NavbarMenu from "./NavbarMenu";
 export default function Navbar() {
   return (
     <header>
-      <h1>
-        <Logo />
-      </h1>
+      <div className="container">
+        <h1>
+          <Logo />
+        </h1>
 
-      <NavbarMenu />
+        <NavbarMenu />
+      </div>
     </header>
   );
 }

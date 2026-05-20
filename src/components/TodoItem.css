@@ -1,0 +1,12 @@
+.todo-item {
+  font-size: var(--font-size);
+}
+
+.todo-item-label {
+  text-decoration-thickness: 4px;
+}
+
+.todo-item-label--checked {
+  text-decoration-color: gray;
+  text-decoration-line: line-through;
+}
